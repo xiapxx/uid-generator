@@ -1,0 +1,1 @@
+create sequence uid_generator_worker_id_seq start 1;
