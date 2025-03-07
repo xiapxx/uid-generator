@@ -13,7 +13,7 @@ import java.sql.ResultSet;
  * @Author xiapeng
  * @Date 2025-03-07 14:21
  */
-public class PostgresWorkerIdAssigner implements WorkerIdAssigner {
+public class PostgresWorkerIdAssigner extends AbstractWorkerIdAssigner {
 
     private static final String SQL = "select nextval('uid_generator_worker_id_seq')";
 
@@ -24,7 +24,7 @@ public class PostgresWorkerIdAssigner implements WorkerIdAssigner {
     }
 
     @Override
-    public long assignWorkerId(long maxWorkerId) {
+    public long createWorkId(long maxWorkerId) {
         loadDriver();
         try(Connection conn = DriverManager.getConnection(dataSource.getUrl(), dataSource.getUsername(), dataSource.getPassword());
             PreparedStatement preparedStatement = conn.prepareStatement(SQL);

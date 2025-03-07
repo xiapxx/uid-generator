@@ -1,7 +1,6 @@
 package io.github.xiapxx.starter.uidgenerator.worker;
 
 import io.github.xiapxx.starter.uidgenerator.properties.UGWorkerDataSourceConfig;
-import io.github.xiapxx.uid.generator.api.worker.WorkerIdAssigner;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,7 +10,7 @@ import java.sql.ResultSet;
  * @Author xiapeng
  * @Date 2025-03-07 15:08
  */
-public class MysqlWorkerIdAssigner implements WorkerIdAssigner {
+public class MysqlWorkerIdAssigner extends AbstractWorkerIdAssigner {
 
     private static final String SQL = "insert into uid_generator_worker_id(id) values(null)";
 
@@ -22,7 +21,7 @@ public class MysqlWorkerIdAssigner implements WorkerIdAssigner {
     }
 
     @Override
-    public long assignWorkerId(long maxWorkerId) {
+    public long createWorkId(long maxWorkerId) {
         loadDriver();
         ResultSet rs = null;
         try(Connection conn = DriverManager.getConnection(dataSource.getUrl(), dataSource.getUsername(), dataSource.getPassword());

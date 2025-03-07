@@ -1,6 +1,5 @@
 package io.github.xiapxx.starter.uidgenerator.worker;
 
-import io.github.xiapxx.uid.generator.api.worker.WorkerIdAssigner;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
  * @Author xiapeng
  * @Date 2025-03-06 17:21
  */
-public class RedisWorkerIdAssigner implements WorkerIdAssigner, Runnable {
+public class RedisWorkerIdAssigner extends AbstractWorkerIdAssigner implements Runnable {
 
     private static final String REDIS_KEY = "uid_generator:";
 
@@ -28,8 +27,6 @@ public class RedisWorkerIdAssigner implements WorkerIdAssigner, Runnable {
     private static final int RENEW_INTERVAL = REDIS_TIME_OUT - 100;
 
     private StringRedisTemplate stringRedisTemplate;
-
-    private Long currentWorkerId;
 
     private String currentIp;
 
@@ -56,11 +53,7 @@ public class RedisWorkerIdAssigner implements WorkerIdAssigner, Runnable {
      * @return 机器id
      */
     @Override
-    public long assignWorkerId(long maxWorkerId) {
-        if(currentWorkerId != null){
-            return currentWorkerId;
-        }
-
+    public long createWorkId(long maxWorkerId) {
         Set<Long> usingWorkerIdSet = getUsingWorkerId();
         for (long i = 1; i < maxWorkerId; i++) {
             if(usingWorkerIdSet.contains(i)){
@@ -68,7 +61,6 @@ public class RedisWorkerIdAssigner implements WorkerIdAssigner, Runnable {
             }
             String redisKey = REDIS_KEY + ":" + i;
             if(stringRedisTemplate.opsForValue().setIfAbsent(redisKey, currentIp, REDIS_TIME_OUT, TimeUnit.SECONDS)){
-                currentWorkerId = i;
                 startRenewWorkerId();
                 return i;
             }
@@ -103,6 +95,10 @@ public class RedisWorkerIdAssigner implements WorkerIdAssigner, Runnable {
      */
     @Override
     public void run() {
-        stringRedisTemplate.expire(REDIS_KEY + ":" + currentWorkerId, REDIS_TIME_OUT, TimeUnit.SECONDS);
+        Long currentWorkId = getCurrentWorkId();
+        if(currentWorkId == null){
+            return;
+        }
+        stringRedisTemplate.expire(REDIS_KEY + ":" + currentWorkId, REDIS_TIME_OUT, TimeUnit.SECONDS);
     }
 }

@@ -1,6 +1,5 @@
 package io.github.xiapxx.starter.uidgenerator.worker;
 
-import io.github.xiapxx.uid.generator.api.worker.WorkerIdAssigner;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -9,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @Author xiapeng
  * @Date 2025-03-06 17:03
  */
-public class RandomWorkerIdAssigner implements WorkerIdAssigner {
+public class RandomWorkerIdAssigner extends AbstractWorkerIdAssigner {
 
     private Long workerId;
 
@@ -18,7 +17,7 @@ public class RandomWorkerIdAssigner implements WorkerIdAssigner {
     }
 
     @Override
-    public long assignWorkerId(long maxWorkerId) {
+    public long createWorkId(long maxWorkerId) {
         if(workerId != null){
             return workerId;
         }
