@@ -27,11 +27,14 @@ public class PostgresWorkerIdAssigner implements WorkerIdAssigner {
     public long assignWorkerId(long maxWorkerId) {
         loadDriver();
         try(Connection conn = DriverManager.getConnection(dataSource.getUrl(), dataSource.getUsername(), dataSource.getPassword());
-            PreparedStatement preparedStatement = conn.prepareStatement(SQL)
+            PreparedStatement preparedStatement = conn.prepareStatement(SQL);
+            ResultSet resultSet = preparedStatement.executeQuery();
         )
         {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.getLong(0);
+           if(!resultSet.next()){
+               throw new RuntimeException("Unable to allocate Worker ID");
+           }
+           return resultSet.getLong(1);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
