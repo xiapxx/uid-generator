@@ -9,10 +9,9 @@ import io.github.xiapxx.uid.generator.api.UidGenerator;
 import io.github.xiapxx.uid.generator.impl.core.CachedUidGenerator;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import static io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorProperties.PREFIX;
 
 /**
  * 基于baidu的UidGenerator;
@@ -22,19 +21,15 @@ import static io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorPrope
  * @Author xiapeng
  * @Date 2025-03-06 15:50
  */
-@Import({RedisWorkerIdConfiguration.class})
+@EnableConfigurationProperties(UidGeneratorProperties.class)
+@Import({RedisWorkerIdConfiguration.class, PostgresWorkerIdConfiguration.class})
 public class UidGeneratorAutoConfiguration {
 
-    @Bean
-    @ConfigurationProperties(prefix = PREFIX)
-    public UidGeneratorProperties uidGeneratorProperties() {
-        return new UidGeneratorProperties();
-    }
 
     @Bean
     @ConditionalOnMissingBean
     public WorkerIdAssigner workerIdAssigner(UidGeneratorProperties uidGeneratorProperties) {
-        return new RandomWorkerIdAssigner(uidGeneratorProperties.getWorkerId());
+        return new RandomWorkerIdAssigner(uidGeneratorProperties.getWorker().getId());
     }
 
     @Bean(initMethod = "init", destroyMethod = "destroy")

@@ -1,14 +1,16 @@
 package io.github.xiapxx.starter.uidgenerator.properties;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import static io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorProperties.PREFIX;
+
 /**
  * @Author xiapeng
  * @Date 2025-03-06 16:00
  */
+@ConfigurationProperties(prefix = PREFIX)
 public class UidGeneratorProperties {
 
     public static final String PREFIX = "uid.generator";
-
-    public static final String WORKER_ID_TYPE = "workIdType";
 
     private int timeBits = 29;
 
@@ -43,13 +45,9 @@ public class UidGeneratorProperties {
     private Long scheduleInterval;
 
     /**
-     * 机器id;
-     * 如果不配置uid.generator.workIdType:
-     * 1. 配置了workerId, 使用配置的workerId
-     * 2. 没有配置workerId, 随机生成workerId
-     *
+     * 生成worker id的相关配置
      */
-    private Long workerId;
+    private UGWorkerConfig worker = new UGWorkerConfig();
 
     public int getTimeBits() {
         return timeBits;
@@ -108,11 +106,11 @@ public class UidGeneratorProperties {
     }
 
 
-    public Long getWorkerId() {
-        return workerId;
+    public UGWorkerConfig getWorker() {
+        return worker;
     }
 
-    public void setWorkerId(Long workerId) {
-        this.workerId = workerId;
+    public void setWorker(UGWorkerConfig worker) {
+        this.worker = worker;
     }
 }

@@ -10,8 +10,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import static io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorProperties.PREFIX;
-import static io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorProperties.WORKER_ID_TYPE;
+import static io.github.xiapxx.starter.uidgenerator.properties.UGWorkerConfig.PREFIX;
 
 /**
  * @Author xiapeng
@@ -19,7 +18,7 @@ import static io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorPrope
  */
 @ConditionalOnClass({StringRedisTemplate.class, RedisAutoConfiguration.class})
 @AutoConfigureAfter(RedisAutoConfiguration.class)
-@ConditionalOnProperty(prefix = PREFIX, name = WORKER_ID_TYPE, havingValue = "redis")
+@ConditionalOnProperty(prefix = PREFIX, name = "type", havingValue = "redis")
 public class RedisWorkerIdConfiguration {
 
     @Bean
