@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Import;
  * @Date 2025-03-06 15:50
  */
 @EnableConfigurationProperties(UidGeneratorProperties.class)
-@Import({RedisWorkerIdConfiguration.class, PostgresWorkerIdConfiguration.class})
+@Import({RedisWorkerIdConfiguration.class, PostgresWorkerIdConfiguration.class, MysqlWorkerIdConfiguration.class})
 public class UidGeneratorAutoConfiguration {
 
 
