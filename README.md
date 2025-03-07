@@ -8,12 +8,14 @@
 
 # 使用
   1. 依赖
-        <dependency>
-            <groupId>io.github.xiapxx</groupId>
-            <artifactId>uid-generator-spring-boot-starter</artifactId>
-            <version>1.0.1</version>
-        </dependency> 
- 2. 生成id
+     
+     groupId: io.github.xiapxx
+     
+     artifactId: uid-generator-spring-boot-starter
+     
+     version: 1.0.1
+       
+ 3. 生成id
     class XXXService {
         @Autowired
         private UidGenerator uidGenerator;
@@ -23,27 +25,32 @@
         }
     }
     
-=================================================================================================
-# 关于机器id的生成, 可选择如下5种方式:    
-# 方式1 ：随机生成机器id方式, 无需任何配置, 也是默认方式. 多个应用实例时不保证唯一, 如果是单机应用，可使用这种方式;
-# 方式2 ：手动指定机器id, 多个应用实例时, 每个应用实例需配置不同的id, 配置如下:
-  // 应用1
-  uid.generator.worker.id=1  
-   // 应用2
-  uid.generator.worker.id=2
-  ...
 
-# 方式3 : redis方式自动生成机器id, 配置如下:
-  // 配置spring.redis的相关配置; 
-  <dependency>
-          <groupId>org.springframework.data</groupId>
-          <artifactId>spring-data-redis</artifactId>
-          <version>xxxx</version>
-  </dependency>
-  // 配置 
-  uid.generator.worker.type=redis
+# 关于机器id的生成, 可选择如下5种方式:    
+ 1. 随机生成机器id方式, 无需任何配置, 也是默认方式. 多个应用实例时不保证唯一, 如果是单机应用，可使用这种方式;
+ 2. 手动指定机器id, 多个应用实例时, 每个应用实例需配置不同的id, 配置如下:
+    
+    // 应用1
   
-# 方式4 ： mysql方式自动生成机器id, 配置如下:
+    uid.generator.worker.id=1  
+  
+     // 应用2
+   
+    uid.generator.worker.id=2
+
+ 4. redis方式自动生成机器id, 配置如下:
+    
+     // 配置spring.redis的相关配置; 
+ 
+     groupId : org.springframework.data
+    
+     artifactId : spring-data-redis
+ 
+     // 配置 
+  
+      uid.generator.worker.type=redis
+  
+6. mysql方式自动生成机器id, 配置如下:
   // 创建如下表:
   create table uid_generator_worker_id  (
     id bigint(20) not null auto_increment,
@@ -57,7 +64,7 @@
  uid.generator.worker.dataSource.username=xxxx
  uid.generator.worker.dataSource.password=xxx
 
-# 方式5 ： postgres方式自动生成机器id, 配置如下
+7. postgres方式自动生成机器id, 配置如下：
   // 创建如下序列 
  create sequence uid_generator_worker_id_seq start 1;
  // 配置 
@@ -68,7 +75,7 @@
  uid.generator.worker.dataSource.username=xxxx
  uid.generator.worker.dataSource.password=xxx
 
-=================================================================================================
+
  
   
 
