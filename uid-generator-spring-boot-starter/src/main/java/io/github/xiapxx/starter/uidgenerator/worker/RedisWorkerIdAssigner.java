@@ -2,6 +2,8 @@ package io.github.xiapxx.starter.uidgenerator.worker;
 
 import io.github.xiapxx.uid.generator.api.worker.WorkerIdAssigner;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -29,10 +31,22 @@ public class RedisWorkerIdAssigner implements WorkerIdAssigner, Runnable {
 
     private Long currentWorkerId;
 
+    private String currentIp;
+
     private ScheduledThreadPoolExecutor scheduler;
 
     public RedisWorkerIdAssigner(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
+        this.currentIp = getLocalIp();
+    }
+
+    private String getLocalIp() {
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            return localHost.getHostAddress();
+        } catch (UnknownHostException e) {
+            return "UnknownHost";
+        }
     }
 
     /**
@@ -53,7 +67,7 @@ public class RedisWorkerIdAssigner implements WorkerIdAssigner, Runnable {
                 continue;
             }
             String redisKey = REDIS_KEY + ":" + i;
-            if(stringRedisTemplate.opsForValue().setIfAbsent(redisKey, "机器ip", REDIS_TIME_OUT, TimeUnit.SECONDS)){
+            if(stringRedisTemplate.opsForValue().setIfAbsent(redisKey, currentIp, REDIS_TIME_OUT, TimeUnit.SECONDS)){
                 currentWorkerId = i;
                 startRenewWorkerId();
                 return i;
@@ -82,6 +96,7 @@ public class RedisWorkerIdAssigner implements WorkerIdAssigner, Runnable {
         }
         return keys.stream().map(item -> Long.valueOf(item)).collect(Collectors.toSet());
     }
+
 
     /**
      * 续约当前分配的机器id
