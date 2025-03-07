@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.github.xiapxx</groupId>
+    <artifactId>uid-generator</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <description>基于baidu的uid-generator</description>
+    <modules>
+        <module>uid-generator-api</module>
+        <module>uid-generator-impl</module>
+        <module>uid-generator-spring-boot-starter</module>
+    </modules>
+
+</project>

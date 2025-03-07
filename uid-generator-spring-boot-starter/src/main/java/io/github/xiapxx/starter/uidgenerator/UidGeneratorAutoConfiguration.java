@@ -1,0 +1,71 @@
+package io.github.xiapxx.starter.uidgenerator;
+
+import io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorProperties;
+import io.github.xiapxx.starter.uidgenerator.worker.RandomWorkerIdAssigner;
+import io.github.xiapxx.uid.generator.api.buffer.RejectedPutBufferHandler;
+import io.github.xiapxx.uid.generator.api.buffer.RejectedTakeBufferHandler;
+import io.github.xiapxx.uid.generator.api.worker.WorkerIdAssigner;
+import io.github.xiapxx.uid.generator.api.UidGenerator;
+import io.github.xiapxx.uid.generator.impl.core.CachedUidGenerator;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import static io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorProperties.PREFIX;
+
+/**
+ * 基于baidu的UidGenerator;
+ * 1. 性能高;
+ * 2. 解决了时间回退问题
+ *
+ * @Author xiapeng
+ * @Date 2025-03-06 15:50
+ */
+@Import({RedisWorkerIdConfiguration.class})
+public class UidGeneratorAutoConfiguration {
+
+    @Bean
+    @ConfigurationProperties(prefix = PREFIX)
+    public UidGeneratorProperties uidGeneratorProperties() {
+        return new UidGeneratorProperties();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public WorkerIdAssigner workerIdAssigner(UidGeneratorProperties uidGeneratorProperties) {
+        return new RandomWorkerIdAssigner(uidGeneratorProperties.getWorkerId());
+    }
+
+    @Bean(initMethod = "init", destroyMethod = "destroy")
+    public UidGenerator uidGenerator(WorkerIdAssigner workerIdAssigner,
+                                     ObjectProvider<RejectedPutBufferHandler> rejectedPutBufferHandlerObjectProvider,
+                                     ObjectProvider<RejectedTakeBufferHandler> rejectedTakeBufferHandlerObjectProvider,
+                                     UidGeneratorProperties uidGeneratorProperties) {
+        CachedUidGenerator cachedUidGenerator = new CachedUidGenerator();
+        cachedUidGenerator.setBoostPower(uidGeneratorProperties.getBoostPower());
+        cachedUidGenerator.setTimeBits(uidGeneratorProperties.getTimeBits());
+        cachedUidGenerator.setWorkerBits(uidGeneratorProperties.getWorkerBits());
+        cachedUidGenerator.setSeqBits(uidGeneratorProperties.getSeqBits());
+        cachedUidGenerator.setEpochStr(uidGeneratorProperties.getEpochStr());
+        cachedUidGenerator.setWorkerIdAssigner(workerIdAssigner);
+        cachedUidGenerator.setPaddingFactor(uidGeneratorProperties.getPaddingFactor());
+
+        if(uidGeneratorProperties.getScheduleInterval() != null){
+            cachedUidGenerator.setScheduleInterval(uidGeneratorProperties.getScheduleInterval());
+        }
+
+        RejectedPutBufferHandler rejectedPutBufferHandler = rejectedPutBufferHandlerObjectProvider.getIfAvailable();
+        if(rejectedPutBufferHandler != null){
+            cachedUidGenerator.setRejectedPutBufferHandler(rejectedPutBufferHandler);
+        }
+
+        RejectedTakeBufferHandler rejectedTakeBufferHandler = rejectedTakeBufferHandlerObjectProvider.getIfAvailable();
+        if(rejectedTakeBufferHandler != null){
+            cachedUidGenerator.setRejectedTakeBufferHandler(rejectedTakeBufferHandler);
+        }
+
+        return cachedUidGenerator;
+    }
+
+}
