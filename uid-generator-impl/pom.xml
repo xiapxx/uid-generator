@@ -10,6 +10,23 @@
     </parent>
     <artifactId>uid-generator-impl</artifactId>
 
+    <url>https://github.com/xiapxx/uid-generator.git</url>
+    <scm>
+        <url>https://github.com/xiapxx/uid-generator.git</url>
+    </scm>
+    <description>基于baidu的uid-generator</description>
+    <developers>
+        <developer>
+            <name>xiapeng</name>
+            <email>250891957@qq.com</email>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>xiapeng</name>
+        </license>
+    </licenses>
+
     <dependencies>
         <dependency>
             <groupId>io.github.xiapxx</groupId>
