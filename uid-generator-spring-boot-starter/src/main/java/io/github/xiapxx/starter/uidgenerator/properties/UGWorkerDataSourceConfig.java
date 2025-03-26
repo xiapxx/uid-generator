@@ -6,6 +6,9 @@ package io.github.xiapxx.starter.uidgenerator.properties;
  */
 public class UGWorkerDataSourceConfig {
 
+    /**
+     * 可以不指定, 使用SPI机制自动获取
+     */
     private String driverClass;
 
     private String url;

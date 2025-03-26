@@ -1,6 +1,10 @@
 package io.github.xiapxx.starter.uidgenerator.properties;
 
+import io.github.xiapxx.starter.uidgenerator.enums.UGWorkerTypeEnum;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import java.sql.Driver;
+import java.util.ServiceLoader;
 import static io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorProperties.PREFIX;
 
 /**
@@ -8,7 +12,7 @@ import static io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorPrope
  * @Date 2025-03-06 16:00
  */
 @ConfigurationProperties(prefix = PREFIX)
-public class UidGeneratorProperties {
+public class UidGeneratorProperties implements InitializingBean {
 
     public static final String PREFIX = "uid.generator";
 
@@ -112,5 +116,34 @@ public class UidGeneratorProperties {
 
     public void setWorker(UGWorkerConfig worker) {
         this.worker = worker;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        loadDriverClass();
+    }
+
+    private void loadDriverClass() {
+        if(worker.getType() == null || UGWorkerTypeEnum.redis == worker.getType()){
+            return;
+        }
+
+        UGWorkerDataSourceConfig dataSource = worker.getDataSource();
+        if(dataSource.getDriverClass() != null && dataSource.getDriverClass().length() > 0){
+            return;
+        }
+
+        ServiceLoader<Driver> serviceLoader = ServiceLoader.load(Driver.class);
+        if (serviceLoader == null) {
+            return;
+        }
+
+        for (Driver driver : serviceLoader) {
+            String driverClassName = driver.getClass().getName();
+            if(driverClassName.toLowerCase().contains(worker.getType().name())){
+                dataSource.setDriverClass(driverClassName);
+                return;
+            }
+        }
     }
 }

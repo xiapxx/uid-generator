@@ -64,7 +64,7 @@
 
 #### 添加配置
     uid.generator.worker.type=mysql
-    uid.generator.worker.dataSource.driverClass=xxxx
+    uid.generator.worker.dataSource.driverClass=xxxx // 1.0.2版本可以不指定, 使用SPI机制获取
     uid.generator.worker.dataSource.url=jdbc:mysql://xxxxx/xxx
     uid.generator.worker.dataSource.username=xxxx
     uid.generator.worker.dataSource.password=xxx
@@ -74,7 +74,7 @@
     create sequence uid_generator_worker_id_seq start 1;
 #### 添加配置
     uid.generator.worker.type=postgres
-    uid.generator.worker.dataSource.driverClass=xxxx
+    uid.generator.worker.dataSource.driverClass=xxxx // 1.0.2版本可以不指定, 使用SPI机制获取
     uid.generator.worker.dataSource.url=jdbc:postgresql://xxxxx/xxx
     uid.generator.worker.dataSource.username=xxxx
     uid.generator.worker.dataSource.password=xxx
