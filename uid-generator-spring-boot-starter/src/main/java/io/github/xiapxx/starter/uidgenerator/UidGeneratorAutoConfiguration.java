@@ -1,5 +1,6 @@
 package io.github.xiapxx.starter.uidgenerator;
 
+import io.github.xiapxx.starter.uidgenerator.holder.UidGeneratorHolder;
 import io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorProperties;
 import io.github.xiapxx.starter.uidgenerator.worker.RandomWorkerIdAssigner;
 import io.github.xiapxx.uid.generator.api.buffer.RejectedPutBufferHandler;
@@ -61,6 +62,11 @@ public class UidGeneratorAutoConfiguration {
         }
 
         return cachedUidGenerator;
+    }
+
+    @Bean
+    public UidGeneratorHolder uidGeneratorHolder(UidGenerator uidGenerator) {
+        return new UidGeneratorHolder(uidGenerator);
     }
 
 }
