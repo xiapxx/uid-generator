@@ -25,6 +25,10 @@
         long uid = uidGenerator.getUID()
     ...
 
+    或
+
+    UidGeneratorHolder.nextUID();  // 1.0.3版本支持该方式
+
 ## 机器id分配方式
 共5种方式: 随机, 手动指定, redis, mysql, postgres。 只需使用其中一种即可
 
