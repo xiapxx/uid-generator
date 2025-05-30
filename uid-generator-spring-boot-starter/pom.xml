@@ -9,7 +9,7 @@
         <version>1.0.0</version>
     </parent>
     <artifactId>uid-generator-spring-boot-starter</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
 
     <url>https://github.com/xiapxx/uid-generator.git</url>
     <scm>

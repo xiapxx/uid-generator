@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * redis方式生成机器id
@@ -54,14 +53,15 @@ public class RedisWorkerIdAssigner extends AbstractWorkerIdAssigner implements R
      */
     @Override
     public long createWorkId(long maxWorkerId) {
-        Set<Long> usingWorkerIdSet = getUsingWorkerId();
+        Set<String> usingAppRedisKeys = getUsingAppRedisKeys();
         for (long i = 1; i < maxWorkerId; i++) {
-            if(usingWorkerIdSet.contains(i)){
+            String appRedisKey = getAppRedisKey(i);
+            if(usingAppRedisKeys.contains(appRedisKey)){
                 continue;
             }
-            String redisKey = REDIS_KEY + ":" + i;
-            if(stringRedisTemplate.opsForValue().setIfAbsent(redisKey, currentIp)){
-                stringRedisTemplate.expire(redisKey, REDIS_TIME_OUT, TimeUnit.SECONDS);
+
+            if(stringRedisTemplate.opsForValue().setIfAbsent(appRedisKey, currentIp)){
+                stringRedisTemplate.expire(appRedisKey, REDIS_TIME_OUT, TimeUnit.SECONDS);
                 startRenewWorkerId();
                 return i;
             }
@@ -78,18 +78,24 @@ public class RedisWorkerIdAssigner extends AbstractWorkerIdAssigner implements R
     }
 
     /**
-     * 获取使用中的机器id集合
+     * 获取使用中的应用redis key
      *
-     * @return 使用中的机器id
+     * @return 使用中的应用redis key
      */
-    private Set<Long> getUsingWorkerId() {
+    private Set<String> getUsingAppRedisKeys() {
         Set<String> keys = stringRedisTemplate.keys(REDIS_KEY + "*");
-        if(keys == null || keys.isEmpty()){
-            return new HashSet<>();
-        }
-        return keys.stream().map(item -> Long.valueOf(item)).collect(Collectors.toSet());
+        return keys == null ? new HashSet<>() : keys;
     }
 
+    /**
+     * 获取当前应用的redis key
+     *
+     * @param index index
+     * @return 应用的redis key
+     */
+    private String getAppRedisKey(long index) {
+        return REDIS_KEY + index;
+    }
 
     /**
      * 续约当前分配的机器id
@@ -100,6 +106,6 @@ public class RedisWorkerIdAssigner extends AbstractWorkerIdAssigner implements R
         if(currentWorkId == null){
             return;
         }
-        stringRedisTemplate.expire(REDIS_KEY + ":" + currentWorkId, REDIS_TIME_OUT, TimeUnit.SECONDS);
+        stringRedisTemplate.expire(getAppRedisKey(currentWorkId), REDIS_TIME_OUT, TimeUnit.SECONDS);
     }
 }
