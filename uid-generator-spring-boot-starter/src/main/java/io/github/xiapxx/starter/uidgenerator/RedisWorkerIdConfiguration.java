@@ -18,7 +18,7 @@ import static io.github.xiapxx.starter.uidgenerator.properties.UGWorkerConfig.PR
  */
 @ConditionalOnClass({StringRedisTemplate.class, RedisAutoConfiguration.class})
 @AutoConfigureAfter(RedisAutoConfiguration.class)
-@ConditionalOnProperty(prefix = PREFIX, name = "type", havingValue = "redis")
+@ConditionalOnProperty(prefix = PREFIX, name = "type", havingValue = "redis", matchIfMissing = true)
 public class RedisWorkerIdConfiguration {
 
     @Bean
