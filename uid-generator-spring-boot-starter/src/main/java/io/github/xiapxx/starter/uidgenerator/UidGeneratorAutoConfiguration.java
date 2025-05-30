@@ -2,14 +2,12 @@ package io.github.xiapxx.starter.uidgenerator;
 
 import io.github.xiapxx.starter.uidgenerator.holder.UidGeneratorHolder;
 import io.github.xiapxx.starter.uidgenerator.properties.UidGeneratorProperties;
-import io.github.xiapxx.starter.uidgenerator.worker.RandomWorkerIdAssigner;
 import io.github.xiapxx.uid.generator.api.buffer.RejectedPutBufferHandler;
 import io.github.xiapxx.uid.generator.api.buffer.RejectedTakeBufferHandler;
 import io.github.xiapxx.uid.generator.api.worker.WorkerIdAssigner;
 import io.github.xiapxx.uid.generator.api.UidGenerator;
 import io.github.xiapxx.uid.generator.impl.core.CachedUidGenerator;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
