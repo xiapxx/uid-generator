@@ -60,7 +60,8 @@ public class RedisWorkerIdAssigner extends AbstractWorkerIdAssigner implements R
                 continue;
             }
             String redisKey = REDIS_KEY + ":" + i;
-            if(stringRedisTemplate.opsForValue().setIfAbsent(redisKey, currentIp, REDIS_TIME_OUT, TimeUnit.SECONDS)){
+            if(stringRedisTemplate.opsForValue().setIfAbsent(redisKey, currentIp)){
+                stringRedisTemplate.expire(redisKey, REDIS_TIME_OUT, TimeUnit.SECONDS);
                 startRenewWorkerId();
                 return i;
             }
