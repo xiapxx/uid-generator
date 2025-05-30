@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import static io.github.xiapxx.starter.uidgenerator.properties.UGWorkerConfig.PREFIX;
 
@@ -20,13 +21,15 @@ import static io.github.xiapxx.starter.uidgenerator.properties.UGWorkerConfig.PR
 @AutoConfigureAfter(name = {"org.redisson.spring.starter.RedissonAutoConfiguration",
         "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration"}
 )
-@ConditionalOnBean(StringRedisTemplate.class)
+@ConditionalOnBean(RedisConnectionFactory.class)
 @ConditionalOnProperty(prefix = PREFIX, name = "type", havingValue = "redis", matchIfMissing = true)
 public class RedisWorkerIdConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public WorkerIdAssigner workerIdAssigner(StringRedisTemplate stringRedisTemplate) {
+    public WorkerIdAssigner workerIdAssigner(RedisConnectionFactory redisConnectionFactory) {
+        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+        stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
         return new RedisWorkerIdAssigner(stringRedisTemplate);
     }
 
