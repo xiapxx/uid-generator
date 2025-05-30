@@ -21,11 +21,11 @@ import static io.github.xiapxx.starter.uidgenerator.properties.UGWorkerConfig.PR
 @AutoConfigureAfter(name = {"org.redisson.spring.starter.RedissonAutoConfiguration",
         "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration"}
 )
-@ConditionalOnBean(RedisConnectionFactory.class)
 @ConditionalOnProperty(prefix = PREFIX, name = "type", havingValue = "redis", matchIfMissing = true)
 public class RedisWorkerIdConfiguration {
 
     @Bean
+    @ConditionalOnBean(RedisConnectionFactory.class)
     @ConditionalOnMissingBean
     public WorkerIdAssigner workerIdAssigner(RedisConnectionFactory redisConnectionFactory) {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
