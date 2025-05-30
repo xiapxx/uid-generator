@@ -28,6 +28,7 @@ public class RedisWorkerIdConfiguration {
     public WorkerIdAssigner workerIdAssigner(RedisConnectionFactory redisConnectionFactory) {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
         stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
+        stringRedisTemplate.afterPropertiesSet();
         return new RedisWorkerIdAssigner(stringRedisTemplate);
     }
 
