@@ -3,7 +3,6 @@ package io.github.xiapxx.starter.uidgenerator;
 import io.github.xiapxx.starter.uidgenerator.worker.RedisWorkerIdAssigner;
 import io.github.xiapxx.uid.generator.api.worker.WorkerIdAssigner;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -25,7 +24,6 @@ import static io.github.xiapxx.starter.uidgenerator.properties.UGWorkerConfig.PR
 public class RedisWorkerIdConfiguration {
 
     @Bean
-    @ConditionalOnBean(RedisConnectionFactory.class)
     @ConditionalOnMissingBean
     public WorkerIdAssigner workerIdAssigner(RedisConnectionFactory redisConnectionFactory) {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
