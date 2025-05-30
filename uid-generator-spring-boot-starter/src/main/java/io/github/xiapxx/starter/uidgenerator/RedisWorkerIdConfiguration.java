@@ -17,13 +17,15 @@ import static io.github.xiapxx.starter.uidgenerator.properties.UGWorkerConfig.PR
  * @Date 2025-03-06 17:11
  */
 @ConditionalOnClass({StringRedisTemplate.class, RedisAutoConfiguration.class})
-@AutoConfigureAfter(RedisAutoConfiguration.class)
+@AutoConfigureAfter(name = {"org.redisson.spring.starter.RedissonAutoConfiguration",
+        "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration"}
+)
+@ConditionalOnBean(StringRedisTemplate.class)
 @ConditionalOnProperty(prefix = PREFIX, name = "type", havingValue = "redis", matchIfMissing = true)
 public class RedisWorkerIdConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnBean(StringRedisTemplate.class)
     public WorkerIdAssigner workerIdAssigner(StringRedisTemplate stringRedisTemplate) {
         return new RedisWorkerIdAssigner(stringRedisTemplate);
     }

@@ -23,15 +23,14 @@ import org.springframework.context.annotation.Import;
  * @Date 2025-03-06 15:50
  */
 @EnableConfigurationProperties(UidGeneratorProperties.class)
-@Import({RedisWorkerIdConfiguration.class, PostgresWorkerIdConfiguration.class, MysqlWorkerIdConfiguration.class})
+@Import({
+        RedisWorkerIdConfiguration.class,
+        PostgresWorkerIdConfiguration.class,
+        MysqlWorkerIdConfiguration.class,
+        RandomWorkerIdConfiguration.class
+})
 public class UidGeneratorAutoConfiguration {
 
-
-    @Bean
-    @ConditionalOnMissingBean
-    public WorkerIdAssigner workerIdAssigner(UidGeneratorProperties uidGeneratorProperties) {
-        return new RandomWorkerIdAssigner(uidGeneratorProperties.getWorker().getId());
-    }
 
     @Bean(initMethod = "init", destroyMethod = "destroy")
     public UidGenerator uidGenerator(WorkerIdAssigner workerIdAssigner,
